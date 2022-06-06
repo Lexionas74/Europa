@@ -6,7 +6,7 @@ class Fun(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    @commands.command(aliases=["cf"], description="flip a coin, heads or tails??")
+    @commands.command(aliases=["cf"])
     async def coinflip(self, ctx):
         choices = ("Heads", "Tails")
         rancoin = random.choice(choices)
