@@ -40,8 +40,5 @@ async def unload(ctx, extension):
     await ctx.reply("Unloaded extension!")
 
 
-@bot.command()
-async def simprate(ctx):
-	choices = [1, 100]
-	await ctx.send(random.choice(choices))
+
 bot.run(my_secret)
