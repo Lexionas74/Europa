@@ -3,7 +3,7 @@ import nextcord
 import random
 from nextcord.ext import commands
 from nextcord import Guild, Interaction, Message
-
+import asyncio
 bot = commands.Bot(command_prefix="as!")
 my_secret = os.environ['TOKEN']
 
@@ -11,7 +11,7 @@ my_secret = os.environ['TOKEN']
 async def on_ready():
 	print("uwu")
 
-@bot.slash_command(name="Example", description="Slash command description here!")
+@bot.slash_command(name="example", description="Slash command description here!")
 async def example(interaction: Interaction):
 	await interaction.response.send_message("Message you want to send here")
 
@@ -39,6 +39,13 @@ async def unload(ctx, extension):
     bot.unload_extension(f"cogs.{extension}")
     await ctx.reply("Unloaded extension!")
 
-
+async def ch_pr():
+    await bot.wait_until_ready()
+    statuses = ["as!help", "you through your window" "Lexionas74#1535", ""]
+    while not bot.is_closed():
+        status = random.choice(statuses)
+        await bot.change_presence(activity=nextcord.Activity(
+            type=nextcord.ActivityType.watching, name=status))
+        await asyncio.sleep(300)
 
 bot.run(my_secret)

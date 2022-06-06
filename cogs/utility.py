@@ -1,6 +1,8 @@
 import nextcord
 from nextcord.ext import commands
 from datetime import datetime
+import asyncio
+import random
 
 class Utility(commands.Cog):
     def __init__(self, bot) -> None:
@@ -14,6 +16,7 @@ class Utility(commands.Cog):
         days, hours = divmod(hours, 24)
         await ctx.reply(f"I have been online for {days}d, {hours}h, {minutes}m, {seconds}s")
         print(f"I have been online for {days}d, {hours}h, {minutes}m, {seconds}s")
+
 
 def setup(bot):
     bot.add_cog(Utility(bot)) 
