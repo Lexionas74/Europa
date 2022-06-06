@@ -16,7 +16,9 @@ class Utility(commands.Cog):
         days, hours = divmod(hours, 24)
         await ctx.reply(f"I have been online for {days}d, {hours}h, {minutes}m, {seconds}s")
         print(f"I have been online for {days}d, {hours}h, {minutes}m, {seconds}s")
-
+    @commands.command()
+    async def ping(self, ctx):
+        await ctx.send(f"Pong! My lantency is {round(self.bot.latency * 1000)}ms")
 
 def setup(bot):
     bot.add_cog(Utility(bot)) 
