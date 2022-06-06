@@ -37,5 +37,24 @@ class Fun(commands.Cog):
             "Very doubtful.",
         ]
         await ctx.send(f":8ball: Question: {question}\n:8ball: Answer {random.choice(responses)}")        
+    @commands.command(description="Play a rock paper scissors game against the bot!")
+    async def rps(self, ctx, message):
+        answer = message.lower()
+        choices = ["rock", "paper", "scissors"]
+        if answer not in choices:
+            await ctx.reply(
+                "That is not an option! Please user either: rock, paper or scissors"
+            )
+            return
+        else:
+            computers_answer = random.choice(choices)
+            if computers_answer == answer:
+                return await ctx.reply(f"Tie! We both picked {answer}")
+            conversion = {"paper": "rock", "rock": "scissors", "scissors": "paper"}
+            if conversion[answer] == computers_answer:
+                return await ctx.reply(
+                    f"You win! I picked {computers_answer} and you picked {answer}!"
+                )
+            await ctx.reply(f"I win! I picked {computers_answer} and you picked {answer}!")
 def setup(bot):
     bot.add_cog(Fun(bot))        
