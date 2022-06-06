@@ -9,7 +9,8 @@ my_secret = os.environ['TOKEN']
 
 @bot.event
 async def on_ready():
-	print("uwu")
+    await ch_pr()
+    print("uwu")
 
 @bot.slash_command(name="example", description="Slash command description here!")
 async def example(interaction: Interaction):
