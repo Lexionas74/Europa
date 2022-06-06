@@ -4,7 +4,7 @@ import random
 from nextcord.ext import commands
 from nextcord import Guild, Interaction, Message
 
-bot = commands.bot(command_prefix="as!")
+bot = commands.Bot(command_prefix="as!")
 my_secret = os.environ['TOKEN']
 
 @bot.event
