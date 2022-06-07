@@ -19,6 +19,12 @@ class Utility(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f"Pong! My lantency is {round(self.bot.latency * 1000)}ms")
+    
+    @commands.command()
+    async def info(self, ctx, guild):
+        em = nextcord.Embed(title="Information", description="Europa")
+        em.add_field(name="Server Count", value=f"Europa is in {self.bot.guilds} Guilds!")
+        await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Utility(bot)) 
