@@ -37,7 +37,7 @@ class Utility(commands.Cog):
         channel = self.bot.get_channel(981077362978476042)
         leave = nextcord.Embed(title=f"Left {guild}", colour = nextcord.Colour.red())
         leave.add_field(name="Server Count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now")
-        leave.add_field(name="Member Count", value=f"{guild.members.count} members")
+        leave.add_field(name="Member Count", value=f"{len(guild.members)} members")
         await channel.send(embed=leave)        
 def setup(bot):
     bot.add_cog(Utility(bot)) 
