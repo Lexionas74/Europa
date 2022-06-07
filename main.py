@@ -74,7 +74,7 @@ async def on_command_error(ctx: commands.Context, error: Exception):
         await ctx.send(embed=em)
     elif isinstance(error, commands.CommandNotFound):
         # await ctx.send("That's not a command")
-        matches = difflib.get_close_matches((ctx.message.content.split(' ')[0]).strip(ctx.prefix), [cmd.name for cmd in self.commands]) # this needs to be improved but i can't be bothered to do that rn
+        matches = difflib.get_close_matches((ctx.message.content.split(' ')[0]).strip(ctx.prefix), [cmd.name for cmd in commands]) # this needs to be improved but i can't be bothered to do that rn
         if matches:
             em = nextcord.Embed(title='Command not found', description="Did you mean: \n"+' | '.join(f'`{match}`' for match in matches), color=nextcord.Color.red())
             return await ctx.send(embed=em)
