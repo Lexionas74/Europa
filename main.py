@@ -4,6 +4,7 @@ import random
 from nextcord.ext import commands
 from nextcord import Guild, Interaction, Message
 import asyncio
+import difflib
 bot = commands.Bot(command_prefix="e!", intents=nextcord.Intents.all())
 my_secret = os.environ['TOKEN']
 
