@@ -8,10 +8,6 @@ import difflib
 import aiosqlite
 from bot import Europa
 
-bot = commands.Bot(command_prefix=get_prefix, intents=nextcord.Intents.all())
-loop = asyncio.get_event_loop()
-my_secret = os.environ['TOKEN']
-
 async def get_prefix(bot: commands.Bot, message: Message):
     if not message.guild:
         return commands.when_mentioned_or("p!")(bot, message)
@@ -35,6 +31,11 @@ async def get_prefix(bot: commands.Bot, message: Message):
         prefixes = [prefix for i in data for prefix in i]
         prefixes = sorted(prefixes, key=lambda m: len(m), reverse=True)
         return commands.when_mentioned_or(*prefixes)(bot, message)
+
+
+bot = commands.Bot(command_prefix=get_prefix, intents=nextcord.Intents.all())
+loop = asyncio.get_event_loop()
+my_secret = os.environ['TOKEN']
 
 @bot.event
 async def on_ready():
