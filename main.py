@@ -10,10 +10,10 @@ from bot import Europa
 
 async def get_prefix(bot: commands.Bot, message: Message):
     if not message.guild:
-        return commands.when_mentioned_or("p!")(bot, message)
+        return commands.when_mentioned_or("e!")(bot, message)
     try:
         return commands.when_mentioned_or(
-            *bot.prefix_cache[message.guild.id])(bot, message)
+            bot.prefix_cache[message.guild.id])(bot, message)
     except KeyError:
         cur = await bot.db.execute(
             "SELECT prefix FROM prefix WHERE guild_id = ?",
@@ -26,8 +26,8 @@ async def get_prefix(bot: commands.Bot, message: Message):
             )
             await bot.db.commit()
             bot.prefix_cache[message.guild.id] = []
-            bot.prefix_cache[message.guild.id].append("p!")
-            data = [("p!", )]
+            bot.prefix_cache[message.guild.id].append("e!")
+            data = [("e!", )]
         prefixes = [prefix for i in data for prefix in i]
         prefixes = sorted(prefixes, key=lambda m: len(m), reverse=True)
         return commands.when_mentioned_or(*prefixes)(bot, message)
@@ -44,7 +44,7 @@ async def on_ready():
 
 @bot.event
 async def on_guild_join(guild: Guild):
-    bot.prefix_cache[guild.id].append("p!")
+    bot.prefix_cache[guild.id].append("e!")
     await bot.db.execute(
         "INSERT OR IGNORE INTO prefix(guild_id, pref) VALUES (?,?)",
         (guild.id, "p!"))
@@ -57,13 +57,11 @@ async def on_guild_remove(guild: Guild):
                             (guild.id, ))
     await bot.db.commit()
 
-@bot.group(description="changes the prefix [admin only]",
-              invoke_without_command=True)
-@commands.check_any(commands.has_permissions(administrator=True),
-                    commands.is_owner())
+@bot.group(description="changes the prefix [admin only]", invoke_without_command=True)
+@commands.check_any(commands.has_permissions(administrator=True), commands.is_owner())
 async def prefix(ctx: commands.Context, prefix: str = None):
     prefixes = await get_prefix(bot, ctx)
-    prefixes.remove('<@931374356116934686> ')
+    prefixes.remove('<@981074794986504253> ')
     if prefix is None:
         return await ctx.send(embed=nextcord.Embed(
             title="Server prefixes",
@@ -91,13 +89,13 @@ async def prefix(ctx: commands.Context, prefix: str = None):
 
 @prefix.command()
 async def delete(ctx, prefix):
-    prefixes = await get_prefix(client, ctx)
+    prefixes = await get_prefix(bot, ctx)
     if prefix in prefixes:
-        await client.db.execute(
+        await bot.db.execute(
             "DELETE FROM prefix WHERe guild_id = ? AND prefix = ?",
             (ctx.guild.id, prefix))
         try:
-            client.prefix_cache[ctx.guild.id].remove(prefix)
+            bot.prefix_cache[ctx.guild.id].remove(prefix)
         except ValueError:
             pass
         await ctx.send(f"Done! removed {prefix} from server prefixes")
