@@ -5,13 +5,100 @@ from nextcord.ext import commands
 from nextcord import Guild, Interaction, Message
 import asyncio
 import difflib
+from bot import Europa
 bot = commands.Bot(command_prefix="e!", intents=nextcord.Intents.all())
 my_secret = os.environ['TOKEN']
+
+async def get_prefix(bot: commands.Bot, message: Message):
+    if not message.guild:
+        return commands.when_mentioned_or("p!")(bot, message)
+    try:
+        return commands.when_mentioned_or(
+            *bot.prefix_cache[message.guild.id])(bot, message)
+    except KeyError:
+        cur = await bot.db.execute(
+            "SELECT prefix FROM prefix WHERE guild_id = ?",
+            (message.guild.id, ))
+        data = await cur.fetchall()
+        if data is None or data == []:
+            await bot.db.execute(
+                "INSERT OR IGNORE INTO prefix(guild_id, prefix) VALUES (?,?)",
+                (message.guild.id, "p!"),
+            )
+            await bot.db.commit()
+            bot.prefix_cache[message.guild.id] = []
+            bot.prefix_cache[message.guild.id].append("p!")
+            data = [("p!", )]
+        prefixes = [prefix for i in data for prefix in i]
+        prefixes = sorted(prefixes, key=lambda m: len(m), reverse=True)
+        return commands.when_mentioned_or(*prefixes)(bot, message)
 
 @bot.event
 async def on_ready():
     await ch_pr()
     print("uwu")
+
+@bot.event
+async def on_guild_join(guild: Guild):
+    bot.prefix_cache[guild.id].append("p!")
+    await bot.db.execute(
+        "INSERT OR IGNORE INTO prefix(guild_id, pref) VALUES (?,?)",
+        (guild.id, "p!"))
+    await bot.db.commit()
+
+@bot.event
+async def on_guild_remove(guild: Guild):
+    del bot.prefix_cache[guild.id]
+    await bot.db.execute("DELETE FROM prefix WHERE guild_id =pre ?",
+                            (guild.id, ))
+    await bot.db.commit()
+
+@bot.group(description="changes the prefix [admin only]",
+              invoke_without_command=True)
+@commands.check_any(commands.has_permissions(administrator=True),
+                    commands.is_owner())
+async def prefix(ctx: commands.Context, prefix: str = None):
+    prefixes = await get_prefix(bot, ctx)
+    prefixes.remove('<@931374356116934686> ')
+    if prefix is None:
+        return await ctx.send(embed=nextcord.Embed(
+            title="Server prefixes",
+            description="\n".join([
+                f"{num}. {prefix}"
+                for num, prefix in enumerate(prefixes, start=1)
+            ]),
+        ))
+    if len(
+            prefixes
+    ) == 7:  # do not change the message or the 7, this is done on purpose
+        return await ctx.send("Can have a maximum of 5 prefixes per server")
+    elif prefix in prefixes:
+        return await ctx.send("That's already a prefix")
+    try:
+        bot.prefix_cache[ctx.guild.id].append(prefix)
+    except KeyError:  # this error should never be raised but just in case
+        print(bot.prefix_cache)
+    await bot.db.execute(
+        "INSERT OR IGNORE INTO prefix(guild_id, prefix) VALUES (?,?)",
+        (ctx.guild.id, prefix),
+    )
+    await bot.db.commit()
+    await ctx.send(f"Added ``{prefix}`` to server prefixes")
+
+@prefix.command()
+async def delete(ctx, prefix):
+    prefixes = await get_prefix(client, ctx)
+    if prefix in prefixes:
+        await client.db.execute(
+            "DELETE FROM prefix WHERe guild_id = ? AND prefix = ?",
+            (ctx.guild.id, prefix))
+        try:
+            client.prefix_cache[ctx.guild.id].remove(prefix)
+        except ValueError:
+            pass
+        await ctx.send(f"Done! removed {prefix} from server prefixes")
+    else:
+        return await ctx.send(f"{prefix} isn't a server prefix")
 
 @bot.slash_command(name="example", description="Slash command description here!")
 async def example(interaction: Interaction):
@@ -49,22 +136,10 @@ async def ch_pr():
         await bot.change_presence(activity=nextcord.Activity(
             type=nextcord.ActivityType.watching, name=status))
         await asyncio.sleep(300)
-@bot.event        
-async def on_command_error(ctx: commands.Context, error: Exception):
-        if isinstance(error, commands.CommandNotFound):
-            matches = difflib.get_close_matches((ctx.message.content.split(' ')[0]).strip(ctx.prefix), [cmd.name for cmd in bot.commands]) # this needs to be improved but i can't be bothered to do that rn
-            if matches:
-                em = nextcord.Embed(title='Command not found', description="Did you mean: \n"+' | '.join(f'`{match}`' for match in matches), color=nextcord.Color.red())
-                return await ctx.send(embed=em)
-            return await ctx.send(embed=nextcord.Embed(title='Command not found', description="That's not a command", color=nextcord.Color.red()))       
-        elif isinstance(error, commands.MissingRequiredArgument):
-            ctx.command.reset_cooldown(ctx)
-            em = nextcord.Embed(
-                title="Missing Required Argument",
-                color = nextcord.Color.red(),
-                description=f"```\n{ctx.prefix}{ctx.command.name} {ctx.command.usage if ctx.command.usage else ctx.command.signature}\n```\n\n**{error.args[0]}**")
-            await ctx.send(embed=em)            
-        await ctx.send(error)
 
 
+bot.loop.create_task(bot.Prefix())
+bot.loop.create_task(bot.Economy())
 bot.run(my_secret)
+asyncio.run(bot.db.close())
+asyncio.run(bot.economy_db.close())
