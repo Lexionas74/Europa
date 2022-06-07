@@ -28,12 +28,16 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         channel = self.bot.get_channel(981077362978476042)
-        join = nextcord.Embed(title=f"Joined {guild}", description=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now!", colour = nextcord.Colour.green())
+        join = nextcord.Embed(title=f"Joined {guild}", colour = nextcord.Colour.green())
+        join.add_field(name="Server Count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now!")
+        join.add_field(name="Member Count", value=f"{guild.member.count} members")
         await channel.send(embed=join)
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         channel = self.bot.get_channel(981077362978476042)
-        leave = nextcord.Embed(title=f"Left {guild}", description=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now!", colour = nextcord.Colour.red())
+        leave = nextcord.Embed(title=f"Left {guild}", colour = nextcord.Colour.red())
+        leave.add_field(name="Server Count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now")
+        leave.add_field(name="Member Count", value=f"{guild.member.count} members")
         await channel.send(embed=leave)        
 def setup(bot):
     bot.add_cog(Utility(bot)) 
