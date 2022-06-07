@@ -9,7 +9,7 @@ import aiosqlite
 from bot import Europa
 
 
-bot = commands.Bot(command_prefix=e!, intents=nextcord.Intents.all())
+bot = commands.Bot(command_prefix="e!" intents=nextcord.Intents.all())
 my_secret = os.environ['TOKEN']
 
 
