@@ -141,9 +141,4 @@ async def ch_pr():
             type=nextcord.ActivityType.watching, name=status))
         await asyncio.sleep(300)
 
-
-bot.loop.create_task(bot.Prefix())
-bot.loop.create_task(bot.Economy())
 bot.run(my_secret)
-asyncio.run(bot.db.close())
-asyncio.run(bot.economy_db.close())
