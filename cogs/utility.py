@@ -23,8 +23,7 @@ class Utility(commands.Cog):
     @commands.command()
     async def info(self, ctx):
         em = nextcord.Embed(title="Information", description="Europa")
-        em.add_field(name="Server count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Servers!",
-    )
+        em.add_field(name="Server count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Servers!")
         await ctx.send(embed=em)
 
 def setup(bot):
