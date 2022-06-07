@@ -38,6 +38,21 @@ bot.prefix_cache = {}
 loop = asyncio.get_event_loop()
 my_secret = os.environ['TOKEN']
 
+async def Prefix(bot):
+    await bot.wait_until_ready()
+    bot.db = await aiosqlite.connect("prefix.db")
+    await bot.db.execute(
+        "CREATE TABLE IF NOT EXISTS prefix(guild_id int, prefix text)")
+    await bot.db.commit()
+
+async def Economy(bot):
+    await bot.wait_until_ready()
+    bot.economy_db = await aiosqlite.connect("economy.db")
+    await bot.economy_db.execute(
+        "CREATE TABLE IF NOT EXISTS economy(author_id int, wallet int, bank int, PRIMARY KEY (author_id))"
+    )
+    await bot.economy_db.commit()
+
 @bot.event
 async def on_ready():
     await ch_pr()
