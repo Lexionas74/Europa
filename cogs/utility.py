@@ -30,7 +30,7 @@ class Utility(commands.Cog):
         channel = self.bot.get_channel(981077362978476042)
         join = nextcord.Embed(title=f"Joined {guild}", colour = nextcord.Colour.green())
         join.add_field(name="Server Count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Guilds now!")
-        join.add_field(name="Member Count", value=f"{guild.members.count} members")
+        join.add_field(name="Member Count", value=f"{len(guild.members)}  members")
         await channel.send(embed=join)
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
