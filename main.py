@@ -50,7 +50,7 @@ async def ch_pr():
             type=nextcord.ActivityType.watching, name=status))
         await asyncio.sleep(300)
 @bot.event        
-async def on_command_error(self, ctx: commands.Context, error: Exception):
+async def on_command_error(ctx: commands.Context, error: Exception):
     if isinstance(error, commands.MissingPermissions):
         await ctx.send("You don't have the perms for that")
     elif isinstance(error,commands.CommandOnCooldown):
