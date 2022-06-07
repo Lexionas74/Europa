@@ -22,7 +22,7 @@ async def get_prefix(bot: commands.Bot, message: Message):
         if data is None or data == []:
             await bot.db.execute(
                 "INSERT OR IGNORE INTO prefix(guild_id, prefix) VALUES (?,?)",
-                (message.guild.id, "p!"),
+                (message.guild.id, "e!"),
             )
             await bot.db.commit()
             bot.prefix_cache[message.guild.id] = []
