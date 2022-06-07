@@ -42,7 +42,7 @@ async def unload(ctx, extension):
 
 async def ch_pr():
     await bot.wait_until_ready()
-    statuses = ["as!help", "you through your window" "Lexionas74#1535", "Angad07#0337"]
+    statuses = ["e!help", "you through your window" "Lexionas74#1535", "Angad07#0337"]
     while not bot.is_closed():
         status = random.choice(statuses)
         await bot.change_presence(activity=nextcord.Activity(
