@@ -22,9 +22,13 @@ class Utility(commands.Cog):
     
     @commands.command()
     async def info(self, ctx):
-        em = nextcord.Embed(title="Information", description="Europa")
+        em = nextcord.Embed(title="Information", description="Europa", color=nextcord.Colour.green())
         em.add_field(name="Server count", value=f"{self.bot.user.name} is in {len(self.bot.guilds)} Servers!")
         await ctx.send(embed=em)
-
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        channel = self.bot.get_channel(981077362978476042)
+        join = nextcord.Embed(title="Joined {guild}", description="{self.bot.user.name} is in {len(self.bot.guilds} Guilds now!", colour = nextcord.Colour.green())
+        await channel.send(embed=join)
 def setup(bot):
     bot.add_cog(Utility(bot)) 
