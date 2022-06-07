@@ -13,7 +13,7 @@ async def get_prefix(bot: commands.Bot, message: Message):
         return commands.when_mentioned_or("e!")(bot, message)
     try:
         return commands.when_mentioned_or(
-            bot.prefix_cache[message.guild.id])(bot, message)
+            *bot.prefix_cache[message.guild.id])(bot, message)
     except KeyError:
         cur = await bot.db.execute(
             "SELECT prefix FROM prefix WHERE guild_id = ?",
@@ -34,6 +34,7 @@ async def get_prefix(bot: commands.Bot, message: Message):
 
 
 bot = commands.Bot(command_prefix=get_prefix, intents=nextcord.Intents.all())
+bot.prefix_cache = {}
 loop = asyncio.get_event_loop()
 my_secret = os.environ['TOKEN']
 
