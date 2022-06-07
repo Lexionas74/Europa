@@ -57,6 +57,13 @@ async def on_command_error(ctx: commands.Context, error: Exception):
                 em = nextcord.Embed(title='Command not found', description="Did you mean: \n"+' | '.join(f'`{match}`' for match in matches), color=nextcord.Color.red())
                 return await ctx.send(embed=em)
             return await ctx.send(embed=nextcord.Embed(title='Command not found', description="That's not a command", color=nextcord.Color.red()))       
+        elif isinstance(error, commands.MissingRequiredArgument):
+            ctx.command.reset_cooldown(ctx)
+            em = nextcord.Embed(
+                title="Missing Required Argument",
+                color = nextcord.Color.red(),
+                description=f"```\n{ctx.prefix}{ctx.command.name} {ctx.command.usage if ctx.command.usage else ctx.command.signature}\n```\n\n**{error.args[0]}**")
+            await ctx.send(embed=em)            
         await ctx.send(error)
 
 
