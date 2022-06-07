@@ -51,6 +51,12 @@ async def ch_pr():
         await asyncio.sleep(300)
 @bot.event        
 async def on_command_error(ctx: commands.Context, error: Exception):
+        if isinstance(error, commands.CommandNotFound):
+            matches = difflib.get_close_matches((ctx.message.content.split(' ')[0]).strip(ctx.prefix), [cmd.name for cmd in bot.commands]) # this needs to be improved but i can't be bothered to do that rn
+            if matches:
+                em = nextcord.Embed(title='Command not found', description="Did you mean: \n"+' | '.join(f'`{match}`' for match in matches), color=nextcord.Color.red())
+                return await ctx.send(embed=em)
+            return await ctx.send(embed=nextcord.Embed(title='Command not found', description="That's not a command", color=nextcord.Color.red()))       
         await ctx.send(error)
 
 
