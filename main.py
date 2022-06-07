@@ -5,9 +5,10 @@ from nextcord.ext import commands
 from nextcord import Guild, Interaction, Message
 import asyncio
 import difflib
+import aiosqlite
 from bot import Europa
 
-bot = commands.Bot(command_prefix="e!", intents=nextcord.Intents.all())
+bot = commands.Bot(command_prefix=get_prefix, intents=nextcord.Intents.all())
 loop = asyncio.get_event_loop()
 my_secret = os.environ['TOKEN']
 
