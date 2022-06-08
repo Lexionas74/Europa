@@ -6,7 +6,6 @@ from nextcord import Guild, Interaction, Message
 import asyncio
 import difflib
 import aiosqlite
-from bot import Europa
 
 
 bot = commands.Bot(command_prefix="e!", intents=nextcord.Intents.all())
